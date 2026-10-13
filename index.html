@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>《生命同行营》第二期</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="shell">
+  <header class="masthead">
+    <div class="brand"><span id="brand-name">《生命同行营》</span><small id="brand-sub">第二期 · 每日读经 · 祷告</small></div>
+    <div class="tools">
+      <button class="today-btn" id="btn-today" type="button">回到今天</button>
+      <div class="lang" role="group" aria-label="语言 / Language">
+        <button type="button" id="lang-zh" data-lang="zh" aria-pressed="true">中</button>
+        <button type="button" id="lang-en" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="cal" aria-label="日历">
+      <div class="cal-head">
+        <button class="nav" id="btn-prev-month" type="button" aria-label="上个月">‹</button>
+        <h2 id="month-label"></h2>
+        <button class="nav" id="btn-next-month" type="button" aria-label="下个月">›</button>
+      </div>
+      <div class="cal-grid cal-week" id="cal-week" aria-hidden="true"></div>
+      <div class="cal-grid" id="cal-days" role="grid"></div>
+      <p class="cal-legend"><i class="dot"></i><span id="legend"></span></p>
+    </aside>
+
+    <article class="reading" id="reading" aria-live="polite"></article>
+  </main>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+<script src="prayers.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
