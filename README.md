@@ -31,7 +31,7 @@ New days are added in batches.
 - Monthly calendar starting on Sunday; days with a devotion are marked with a dot
 - Previous / next navigation, a "Today" button, and ← → keyboard shortcuts
 - On phones, swipe left or right on the calendar to change month
-- Optional daily release: show only devotions up to today, with today's devotion appearing at 7:00 pm (see **Settings**)
+- Optional daily release: show only devotions up to today, with today's devotion appearing at 10:00 pm (see **Settings**)
 - Light and dark mode that follow the device setting
 - Phone-friendly single-column layout
 - No build step, no server, no database, and no tracking
@@ -54,7 +54,7 @@ Edit `config.js`:
 |---|---|---|
 | `isAllContentDisplayed` | `1` | Show every devotion that has been written, including future dates |
 | | `0` | Show devotions only up to today; today's devotion appears at `publishTime` |
-| `publishTime` | e.g. `"19:00"` | Release time for today's devotion (24-hour clock). Used only when `isAllContentDisplayed` is `0` |
+| `publishTime` | e.g. `"22:00"` | Release time for today's devotion (24-hour clock). Used only when `isAllContentDisplayed` is `0` |
 | `timeZone` | e.g. `"America/Toronto"` | Time zone used for "today" and the release time. Use `""` to follow each reader's own device |
 
 When `isAllContentDisplayed` is `0`, an open page checks once a minute and updates itself at the release time and after midnight.
