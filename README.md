@@ -1,4 +1,4 @@
-# Life Together · 《生命同行营》第二期
+# Life Together · 生命同行营 第二期
 
 A bilingual (Chinese / English) daily devotional calendar. Each day pairs a short Scripture passage with a brief reflection and a four-part prayer, so participants can read and pray through the same passage together.
 
@@ -99,14 +99,29 @@ All content lives in `prayers.js` as one entry per day, sorted by date:
 
 If an entry has no `en` block, the English view falls back to the Chinese text. Days without an entry show "No devotion for this day yet."
 
-## Scripture and sources
+## Scripture, sources, and copyright
 
-- **Berean Standard Bible (BSB)**: dedicated to the public domain on April 30, 2023. See [berean.bible/terms.htm](https://berean.bible/terms.htm).
+**In short:** everything on this site is public domain, linked only, or original writing. No copyrighted Bible text or commentary is reproduced.
+
+| Content | Source | How it is used | Status |
+|---|---|---|---|
+| Chinese Scripture | 和合本 (Chinese Union Version) | Shown in full, wording unchanged | Public domain |
+| English Scripture | Berean Standard Bible (BSB) | Shown in full | Public domain |
+| NIV, 新译本 | Copyrighted | Link only, no text copied | Not reproduced |
+| Reflections and prayers | Written for this site | Original text; the reflections draw on 《圣经综合解读》 for understanding only | Original |
+| 《圣经综合解读》 | cmcbiblereading.com | Used as a study reference; the books and any notes taken from them are not in this repository | Not reproduced |
+| Fonts | Google Fonts | Free to use | Open license |
+
+Details:
+
+- **Berean Standard Bible (BSB)**: dedicated to the public domain on April 30, 2023. See [berean.bible/terms.htm](https://berean.bible/terms.htm). The text is taken from [scrollmapper/bible_databases](https://github.com/scrollmapper/bible_databases) (`BSB.json`).
 - **新译本 (Chinese New Version, Simplified, CNVS)**: only linked ("阅读新译本 ↗" opens the passage on BibleGateway), never reproduced. The CNV is copyrighted by the Worldwide Bible Society.
 - **NIV**: only linked, never reproduced. The NIV is copyrighted by Biblica, and quoting a complete book of the Bible requires written permission. See [biblica.com/permissions](https://www.biblica.com/permissions/).
-- **和合本 (Chinese Union Version)**: public-domain text (the 1919 translation), as distributed by the CrossWire Bible Society (SWORD module "ChiUn") and taken from [scrollmapper/bible_databases](https://github.com/scrollmapper/bible_databases). Converted from traditional to simplified characters; translator notes such as （或译……） are removed. The text refers to God as 他 / 你; the reflections and prayers on this site are original writing and use 祂 / 祢.
-- **Reflections**: original writing that draws on 《圣经综合解读》 ([cmcbiblereading.com](https://cmcbiblereading.com)). No commentary text is copied.
+- **和合本 (Chinese Union Version)**: public-domain text (the 1919 translation), as distributed by the CrossWire Bible Society (SWORD module "ChiUn") and taken from [scrollmapper/bible_databases](https://github.com/scrollmapper/bible_databases). To make it easier to read, the text is converted from traditional to simplified characters, a few character forms are standardized (著 → 着, 藉 → 借, 甚么 → 什么), and translator notes such as （或译……） are removed. The original 「」 quotation marks are kept. None of these changes alter the meaning or wording of the text. The text refers to God as 他 / 你, as in the original; the reflections and prayers on this site are original writing and use 祂 / 祢.
+- **Reflections and prayers**: original writing. The reflections draw on 《圣经综合解读》 ([cmcbiblereading.com](https://cmcbiblereading.com)) for understanding of each passage; no commentary text is copied, and the source is credited in the page footer. The prayers follow the general ACTS pattern (adoration, confession, thanksgiving, supplication), which is a common prayer structure and not anyone's copyrighted work.
 - **Fonts**: Noto Serif SC and Noto Sans SC from Google Fonts, with system fonts as a fallback.
+
+The public-domain status of the Chinese and English Bible texts follows the statements of their publishers and distributors. This is not legal advice; if the site will be shared widely, consider having someone familiar with copyright review it.
 
 ## License
 

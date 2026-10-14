@@ -1,4 +1,4 @@
-// 《生命同行营》第二期 / Life Together：读取 prayers.js 中的 window.PRAYERS，显示月历与当日灵修（中 / EN）。
+// 生命同行营 第二期 / Life Together：读取 prayers.js 中的 window.PRAYERS，显示月历与当日灵修（中 / EN）。
 (function () {
   const all = window.PRAYERS || [];
   const cfg = Object.assign({ isAllContentDisplayed: 1, publishTime: "19:00", timeZone: "" }, window.CONFIG || {});
@@ -40,14 +40,14 @@
 
   const T = {
     zh: {
-      brand: "《生命同行营》", sub: "第二期 · 每日读经 · 祷告",
+      brand: "生命同行营", sub: "第二期 · 每日读经 · 祷告",
       today: "回到今天", prevM: "上个月", nextM: "下个月", legend: "已有灵修内容", legendPub: t => `（当日内容 ${t} 自动发布）`,
       week: ["日", "一", "二", "三", "四", "五", "六"],
       wd: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
       month: (y, m) => `${y} 年 ${m} 月`, day: (y, m, d) => `${y} 年 ${m} 月 ${d} 日`,
       interp: "经文解读", prayer: "今日祷告", prev: "‹ 前一篇", next: "后一篇 ›",
       emptyT: "本日内容尚未生成", emptyS: "有内容的日期在日历上带有小圆点。", none: "暂无内容",
-      pendT: "今日内容即将发布", pendS: t => `今天的灵修将于 ${t} 自动发布，到时页面会自动更新，无需刷新。`,
+      pendT: "今日内容即将发布", pendS: t => `今天的灵修将于 ${t} 自动发布，到时页面会自动更新。`,
       acts: [["adoration", "A", "Adoration", "赞美"], ["confession", "C", "Confession", "认罪"],
              ["thanksgiving", "T", "Thanksgiving", "感谢"], ["supplication", "S", "Supplication", "祈求"]],
       foot: "经文：和合本（公有领域版本；新译本仅提供外部链接）　·　解读参考：《圣经综合解读》cmcbiblereading.com"
@@ -61,10 +61,10 @@
       day: (y, m, d) => `${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m - 1]} ${d}, ${y}`,
       interp: "Reflection", prayer: "Today's Prayer", prev: "‹ Previous", next: "Next ›",
       emptyT: "No devotion for this day yet", emptyS: "Days with a devotion are marked with a dot.", none: "no devotion yet",
-      pendT: "Today's devotion is coming soon", pendS: t => `Today's devotion will be posted automatically at ${t}. This page will update on its own; no need to refresh.`,
+      pendT: "Today's devotion is coming soon", pendS: t => `Today's devotion will be posted automatically at ${t}. This page will update on its own.`,
       acts: [["adoration", "A", "Adoration", ""], ["confession", "C", "Confession", ""],
              ["thanksgiving", "T", "Thanksgiving", ""], ["supplication", "S", "Supplication", ""]],
-      foot: "Scripture: Berean Standard Bible (BSB), public domain　·　Reflections drawn from cmcbiblereading.com"
+      foot: "Scripture: Berean Standard Bible (BSB), public domain; NIV is an external link only　·　Reflections drawn from cmcbiblereading.com"
     }
   };
 
