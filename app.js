@@ -1,31 +1,67 @@
 // 《生命同行营》第二期 / Life Together：读取 prayers.js 中的 window.PRAYERS，显示月历与当日灵修（中 / EN）。
 (function () {
-  const data = window.PRAYERS || [];
-  const byDate = new Map(data.map(d => [d.date, d]));
-  const dates = data.map(d => d.date).sort();
+  const all = window.PRAYERS || [];
+  const cfg = Object.assign({ isAllContentDisplayed: 1, publishTime: "19:00", timeZone: "" }, window.CONFIG || {});
+  const showAll = Number(cfg.isAllContentDisplayed) === 1;
+  const [pubH, pubM] = String(cfg.publishTime).split(":").map(Number);
+  const publishMin = (pubH || 0) * 60 + (pubM || 0);
+  const mm = String(pubM || 0).padStart(2, "0");
+  const h12 = (pubH % 12) || 12, ap = pubH < 12 ? "am" : "pm";
+  const publishLabel = { zh: `${h12}:${mm}${ap}`, en: `${h12}:${mm} ${ap}` };
+
+  // 当前日期与时间（按 cfg.timeZone；为空则用读者设备的本地时间）
+  function now() {
+    const d = new Date();
+    if (cfg.timeZone) {
+      try {
+        const p = {};
+        new Intl.DateTimeFormat("en-CA", { timeZone: cfg.timeZone, year: "numeric", month: "2-digit", day: "2-digit",
+          hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(d).forEach(x => { p[x.type] = x.value; });
+        return { iso: `${p.year}-${p.month}-${p.day}`, min: Number(p.hour) * 60 + Number(p.minute) };
+      } catch (e) {}
+    }
+    return { iso: iso(d), min: d.getHours() * 60 + d.getMinutes() };
+  }
+  // 当日内容是否已发布：日期早于今天，或是今天且已过发布时间
+  function released(date, n) { return showAll || date < n.iso || (date === n.iso && n.min >= publishMin); }
+
+  let byDate, dates, todayIso, pendingToday, stamp;
+  function refreshVisible() {
+    const n = now();
+    const data = all.filter(d => released(d.date, n));
+    byDate = new Map(data.map(d => [d.date, d]));
+    dates = data.map(d => d.date).sort();
+    todayIso = n.iso;
+    pendingToday = !showAll && !byDate.has(todayIso) && all.some(d => d.date === todayIso);
+    const old = stamp;
+    stamp = `${todayIso}|${dates.length}`;
+    return old !== undefined && old !== stamp;
+  }
 
   const T = {
     zh: {
       brand: "《生命同行营》", sub: "第二期 · 每日读经 · 祷告",
-      today: "回到今天", prevM: "上个月", nextM: "下个月", legend: "已有灵修内容",
+      today: "回到今天", prevM: "上个月", nextM: "下个月", legend: "已有灵修内容", legendPub: t => `（当日内容 ${t} 自动发布）`,
       week: ["日", "一", "二", "三", "四", "五", "六"],
       wd: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
       month: (y, m) => `${y} 年 ${m} 月`, day: (y, m, d) => `${y} 年 ${m} 月 ${d} 日`,
       interp: "经文解读", prayer: "今日祷告", prev: "‹ 前一篇", next: "后一篇 ›",
       emptyT: "本日内容尚未生成", emptyS: "有内容的日期在日历上带有小圆点。", none: "暂无内容",
+      pendT: "今日内容即将发布", pendS: t => `今天的灵修将于 ${t} 自动发布，到时页面会自动更新，无需刷新。`,
       acts: [["adoration", "A", "Adoration", "赞美"], ["confession", "C", "Confession", "认罪"],
              ["thanksgiving", "T", "Thanksgiving", "感谢"], ["supplication", "S", "Supplication", "祈求"]],
       foot: "经文：新标点和合本　·　解读参考：《圣经综合解读》cmcbiblereading.com"
     },
     en: {
       brand: "Life Together", sub: "Session 2 · Daily Scripture & Prayer",
-      today: "Today", prevM: "Previous month", nextM: "Next month", legend: "Devotion available",
+      today: "Today", prevM: "Previous month", nextM: "Next month", legend: "Devotion available", legendPub: t => ` (today's devotion posts automatically at ${t})`,
       week: ["S", "M", "T", "W", "T", "F", "S"],
       wd: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       month: (y, m) => `${["January","February","March","April","May","June","July","August","September","October","November","December"][m - 1]} ${y}`,
       day: (y, m, d) => `${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m - 1]} ${d}, ${y}`,
       interp: "Reflection", prayer: "Today's Prayer", prev: "‹ Previous", next: "Next ›",
       emptyT: "No devotion for this day yet", emptyS: "Days with a devotion are marked with a dot.", none: "no devotion yet",
+      pendT: "Today's devotion is coming soon", pendS: t => `Today's devotion will be posted automatically at ${t}. This page will update on its own; no need to refresh.`,
       acts: [["adoration", "A", "Adoration", ""], ["confession", "C", "Confession", ""],
              ["thanksgiving", "T", "Thanksgiving", ""], ["supplication", "S", "Supplication", ""]],
       foot: "Scripture: Berean Standard Bible (BSB), public domain　·　Reflections drawn from cmcbiblereading.com"
@@ -41,7 +77,7 @@
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const $ = id => document.getElementById(id);
 
-  const todayIso = iso(new Date());
+  refreshVisible();
   function defaultDate() {
     if (byDate.has(todayIso) || !dates.length) return todayIso;
     return dates.reduce((a, b) => Math.abs(parse(b) - parse(todayIso)) < Math.abs(parse(a) - parse(todayIso)) ? b : a);
@@ -62,7 +98,7 @@
     $("btn-today").textContent = t.today;
     $("btn-prev-month").setAttribute("aria-label", t.prevM);
     $("btn-next-month").setAttribute("aria-label", t.nextM);
-    $("legend").textContent = t.legend;
+    $("legend").textContent = t.legend + (showAll ? "" : t.legendPub(publishLabel[lang]));
     $("foot").textContent = t.foot;
     $("cal-week").innerHTML = t.week.map(w => `<span>${w}</span>`).join("");
     ["zh", "en"].forEach(l => $("lang-" + l).setAttribute("aria-pressed", String(l === lang)));
@@ -100,7 +136,9 @@
     const dateRow = `<div class="r-date"><span>${head}</span><span>${t.wd[d.getDay()]}</span></div>`;
 
     if (!item) {
-      $("reading").innerHTML = `${dateRow}<div class="empty"><strong>${t.emptyT}</strong><span>${t.emptyS}</span></div>${pager}`;
+      const pend = pendingToday && selected === todayIso;
+      const msg = pend ? `<strong>${t.pendT}</strong><span>${t.pendS(publishLabel[lang])}</span>` : `<strong>${t.emptyT}</strong><span>${t.emptyS}</span>`;
+      $("reading").innerHTML = `${dateRow}<div class="empty">${msg}</div>${pager}`;
       return;
     }
     const c = content(item);
@@ -150,4 +188,15 @@
   });
 
   renderAll();
+
+  // 只显示到今天时：每分钟检查一次，到了发布时间或跨过午夜就自动刷新
+  if (!showAll) {
+    setInterval(() => {
+      const wasToday = todayIso;
+      if (!refreshVisible()) return;
+      // 正在看“今天”（或等待发布）的读者，跟着切换到新内容
+      if (selected === wasToday) { selected = todayIso; view = parse(todayIso); view.setDate(1); }
+      renderAll();
+    }, 60 * 1000);
+  }
 })();

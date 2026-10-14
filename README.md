@@ -30,6 +30,7 @@ New days are added in batches.
 - Language toggle (中 / EN) that remembers the reader's choice
 - Monthly calendar starting on Sunday; days with a devotion are marked with a dot
 - Previous / next navigation, a "Today" button, and ← → keyboard shortcuts
+- Optional daily release: show only devotions up to today, with today's devotion appearing at 7:00 pm (see **Settings**)
 - Light and dark mode that follow the device setting
 - Phone-friendly single-column layout
 - No build step, no server, no database, and no tracking
@@ -39,9 +40,25 @@ New days are added in batches.
 | File | Purpose |
 |---|---|
 | `index.html` | Page structure |
+| `config.js` | Settings (which days to show, release time, time zone) |
 | `style.css` | Styles (light / dark themes, mobile layout) |
 | `app.js` | Calendar, navigation, and language switching |
 | `prayers.js` | All daily content (Chinese and English) |
+
+## Settings
+
+Edit `config.js`:
+
+| Setting | Values | Effect |
+|---|---|---|
+| `isAllContentDisplayed` | `1` | Show every devotion that has been written, including future dates |
+| | `0` | Show devotions only up to today; today's devotion appears at `publishTime` |
+| `publishTime` | e.g. `"19:00"` | Release time for today's devotion (24-hour clock). Used only when `isAllContentDisplayed` is `0` |
+| `timeZone` | e.g. `"America/Toronto"` | Time zone used for "today" and the release time. Use `""` to follow each reader's own device |
+
+When `isAllContentDisplayed` is `0`, an open page checks once a minute and updates itself at the release time and after midnight.
+
+Note: this only controls what the page shows. Every devotion in `prayers.js` can still be downloaded by anyone who opens that file directly, so do not rely on it to keep content secret.
 
 ## Run locally
 
