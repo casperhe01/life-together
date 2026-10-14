@@ -14,7 +14,7 @@
     <div class="brand"><span id="brand-name">《生命同行营》</span><small id="brand-sub">第二期 · 每日读经 · 祷告</small></div>
     <div class="tools">
       <button class="today-btn" id="btn-today" type="button">回到今天</button>
-      <div class="lang" role="group" aria-label="语言 / Language">
+      <div class="lang" role="group" aria-label="语言 / Language" title="中 / EN">
         <button type="button" id="lang-zh" data-lang="zh" aria-pressed="true">中</button>
         <button type="button" id="lang-en" data-lang="en" aria-pressed="false">EN</button>
       </div>
@@ -24,9 +24,9 @@
   <main class="layout">
     <aside class="cal" aria-label="日历">
       <div class="cal-head">
-        <button class="nav" id="btn-prev-month" type="button" aria-label="上个月">‹</button>
+        <button class="nav" id="btn-prev-month" type="button" aria-label="上个月"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
         <h2 id="month-label"></h2>
-        <button class="nav" id="btn-next-month" type="button" aria-label="下个月">›</button>
+        <button class="nav" id="btn-next-month" type="button" aria-label="下个月"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
       </div>
       <div class="cal-grid cal-week" id="cal-week" aria-hidden="true"></div>
       <div class="cal-grid" id="cal-days" role="grid"></div>

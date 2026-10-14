@@ -50,7 +50,7 @@
       pendT: "今日内容即将发布", pendS: t => `今天的灵修将于 ${t} 自动发布，到时页面会自动更新，无需刷新。`,
       acts: [["adoration", "A", "Adoration", "赞美"], ["confession", "C", "Confession", "认罪"],
              ["thanksgiving", "T", "Thanksgiving", "感谢"], ["supplication", "S", "Supplication", "祈求"]],
-      foot: "经文：新标点和合本（新译本仅提供外部链接）　·　解读参考：《圣经综合解读》cmcbiblereading.com"
+      foot: "经文：和合本（公有领域版本；新译本仅提供外部链接）　·　解读参考：《圣经综合解读》cmcbiblereading.com"
     },
     en: {
       brand: "Life Together", sub: "Session 2 · Daily Scripture & Prayer",
@@ -208,7 +208,11 @@
   }, { passive: true });
   cal.addEventListener("touchcancel", () => { touch = null; }, { passive: true });
   $("btn-today").addEventListener("click", () => select(todayIso));
-  document.querySelector(".lang").addEventListener("click", e => { const b = e.target.closest("[data-lang]"); if (b) setLang(b.dataset.lang); });
+  // 点语言椭圆框里的任何位置都切换：点到另一种语言就选它，点到当前语言或空白处就换成另一种
+  document.querySelector(".lang").addEventListener("click", e => {
+    const b = e.target.closest("[data-lang]");
+    setLang(b && b.dataset.lang !== lang ? b.dataset.lang : (lang === "zh" ? "en" : "zh"));
+  });
   document.addEventListener("keydown", e => {
     if (e.target.closest("input, textarea")) return;
     const step = e.key === "ArrowLeft" ? -1 : e.key === "ArrowRight" ? 1 : 0;

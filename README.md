@@ -7,7 +7,7 @@ A bilingual (Chinese / English) daily devotional calendar. Each day pairs a shor
 ## What's on each day
 
 - **Scripture**: the day's passage, with verse numbers
-  - Chinese: 新标点和合本 (Chinese Union Version, New Punctuation), plus a "阅读新译本" link to the Chinese New Version (Simplified) on BibleGateway
+  - Chinese: 和合本 (Chinese Union Version, public-domain text), plus a "阅读新译本" link to the Chinese New Version (Simplified) on BibleGateway
   - English: Berean Standard Bible (BSB), plus a "Read in NIV" link to BibleGateway
 - **Reflection (经文解读)**: a short explanation of the passage that points to Christ and applies it to daily life
 - **Prayer (今日祷告)**: written in the ACTS pattern
@@ -104,7 +104,7 @@ If an entry has no `en` block, the English view falls back to the Chinese text. 
 - **Berean Standard Bible (BSB)**: dedicated to the public domain on April 30, 2023. See [berean.bible/terms.htm](https://berean.bible/terms.htm).
 - **新译本 (Chinese New Version, Simplified, CNVS)**: only linked ("阅读新译本 ↗" opens the passage on BibleGateway), never reproduced. The CNV is copyrighted by the Worldwide Bible Society.
 - **NIV**: only linked, never reproduced. The NIV is copyrighted by Biblica, and quoting a complete book of the Bible requires written permission. See [biblica.com/permissions](https://www.biblica.com/permissions/).
-- **新标点和合本 (Chinese Union Version)**: the text follows the edition used in 《圣经综合解读》, which uses 祂 / 祢 for God.
+- **和合本 (Chinese Union Version)**: public-domain text (the 1919 translation), as distributed by the CrossWire Bible Society (SWORD module "ChiUn") and taken from [scrollmapper/bible_databases](https://github.com/scrollmapper/bible_databases). Converted from traditional to simplified characters; translator notes such as （或译……） are removed. The text refers to God as 他 / 你; the reflections and prayers on this site are original writing and use 祂 / 祢.
 - **Reflections**: original writing that draws on 《圣经综合解读》 ([cmcbiblereading.com](https://cmcbiblereading.com)). No commentary text is copied.
 - **Fonts**: Noto Serif SC and Noto Sans SC from Google Fonts, with system fonts as a fallback.
 
