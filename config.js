@@ -1,4 +1,4 @@
-// 《生命同行营》第二期 / Life Together 网站设置（Site settings）
+// 生命同行营第二期 / Life Together 网站设置（Site settings）
 window.CONFIG = {
   // 1 = 日历上显示所有已经生成的内容（包括未来的日期）
   // 0 = 只显示截至今天为止的内容；今天的内容到 publishTime 才发布
