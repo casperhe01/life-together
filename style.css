@@ -78,6 +78,14 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .day.selected, .day.selected:hover, .day.selected:active { background: var(--accent); color: var(--surface); }
 .day.selected::after { background: var(--surface); }
 .day.blank { visibility: hidden; }
+/* 日历可左右滑动切换月份：只让浏览器处理上下滚动，横向手势交给页面 */
+.cal { touch-action: pan-y; }
+@media (prefers-reduced-motion: no-preference) {
+  #cal-days.slide-next { animation: cal-in-next .22s ease-out; }
+  #cal-days.slide-prev { animation: cal-in-prev .22s ease-out; }
+  @keyframes cal-in-next { from { transform: translateX(24px); opacity: .3; } to { transform: none; opacity: 1; } }
+  @keyframes cal-in-prev { from { transform: translateX(-24px); opacity: .3; } to { transform: none; opacity: 1; } }
+}
 .cal-legend { margin: 4px 0 0; font-size: .78rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
 .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); display: inline-block; }
 

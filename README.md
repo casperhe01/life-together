@@ -7,7 +7,7 @@ A bilingual (Chinese / English) daily devotional calendar. Each day pairs a shor
 ## What's on each day
 
 - **Scripture**: the day's passage, with verse numbers
-  - Chinese: 新标点和合本 (Chinese Union Version, New Punctuation)
+  - Chinese: 新标点和合本 (Chinese Union Version, New Punctuation), plus a "阅读新译本" link to the Chinese New Version (Simplified) on BibleGateway
   - English: Berean Standard Bible (BSB), plus a "Read in NIV" link to BibleGateway
 - **Reflection (经文解读)**: a short explanation of the passage that points to Christ and applies it to daily life
 - **Prayer (今日祷告)**: written in the ACTS pattern
@@ -30,6 +30,7 @@ New days are added in batches.
 - Language toggle (中 / EN) that remembers the reader's choice
 - Monthly calendar starting on Sunday; days with a devotion are marked with a dot
 - Previous / next navigation, a "Today" button, and ← → keyboard shortcuts
+- On phones, swipe left or right on the calendar to change month
 - Optional daily release: show only devotions up to today, with today's devotion appearing at 7:00 pm (see **Settings**)
 - Light and dark mode that follow the device setting
 - Phone-friendly single-column layout
@@ -101,6 +102,7 @@ If an entry has no `en` block, the English view falls back to the Chinese text. 
 ## Scripture and sources
 
 - **Berean Standard Bible (BSB)**: dedicated to the public domain on April 30, 2023. See [berean.bible/terms.htm](https://berean.bible/terms.htm).
+- **新译本 (Chinese New Version, Simplified, CNVS)**: only linked ("阅读新译本 ↗" opens the passage on BibleGateway), never reproduced. The CNV is copyrighted by the Worldwide Bible Society.
 - **NIV**: only linked, never reproduced. The NIV is copyrighted by Biblica, and quoting a complete book of the Bible requires written permission. See [biblica.com/permissions](https://www.biblica.com/permissions/).
 - **新标点和合本 (Chinese Union Version)**: the text follows the edition used in 《圣经综合解读》, which uses 祂 / 祢 for God.
 - **Reflections**: original writing that draws on 《圣经综合解读》 ([cmcbiblereading.com](https://cmcbiblereading.com)). No commentary text is copied.

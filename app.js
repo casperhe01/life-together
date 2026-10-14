@@ -50,7 +50,7 @@
       pendT: "今日内容即将发布", pendS: t => `今天的灵修将于 ${t} 自动发布，到时页面会自动更新，无需刷新。`,
       acts: [["adoration", "A", "Adoration", "赞美"], ["confession", "C", "Confession", "认罪"],
              ["thanksgiving", "T", "Thanksgiving", "感谢"], ["supplication", "S", "Supplication", "祈求"]],
-      foot: "经文：新标点和合本　·　解读参考：《圣经综合解读》cmcbiblereading.com"
+      foot: "经文：新标点和合本（新译本仅提供外部链接）　·　解读参考：《圣经综合解读》cmcbiblereading.com"
     },
     en: {
       brand: "Life Together", sub: "Session 2 · Daily Scripture & Prayer",
@@ -87,7 +87,10 @@
 
   // 取当前语言的内容；英文缺失时回退到中文
   const content = item => (lang === "en" && item.en) ? item.en : item;
-  const nivUrl = ref => "https://www.biblegateway.com/passage/?search=" + encodeURIComponent(ref.replace(/–/g, "-")) + "&version=NIV";
+  // BibleGateway 外链（只链接，不复制经文）：NIV（英文）、新译本简体版 CNVS（中文）。都用英文经文出处搜索
+  const bgUrl = (ref, ver) => "https://www.biblegateway.com/passage/?search=" + encodeURIComponent(ref.replace(/–/g, "-")) + "&version=" + ver;
+  const nivUrl = ref => bgUrl(ref, "NIV");
+  const cnvUrl = item => bgUrl((item.en && item.en.ref) || item.ref, "CNVS");
 
   function renderChrome() {
     const t = T[lang];
@@ -147,7 +150,7 @@
       `<p><b><em>${letter}</em><i>${full}</i>${zh}</b><span>${esc(c.prayer[k])}</span></p>`).join("");
     const refLine = lang === "en"
       ? `<p class="r-ref">${esc(c.ref)} <span class="ver">BSB</span><a class="niv" href="${nivUrl(c.ref)}" target="_blank" rel="noopener">Read in NIV ↗</a></p>`
-      : `<p class="r-ref">${esc(c.ref)} <span class="ver">和合本</span></p>`;
+      : `<p class="r-ref">${esc(c.ref)} <span class="ver">和合本</span><a class="niv" href="${cnvUrl(item)}" target="_blank" rel="noopener">阅读新译本 ↗</a></p>`;
     $("reading").innerHTML = `
       <header>${dateRow}<h1 class="r-title">${esc(c.title)}</h1>${refLine}</header>
       <blockquote class="scripture">${verses}</blockquote>
@@ -176,8 +179,34 @@
 
   $("cal-days").addEventListener("click", e => { const b = e.target.closest("[data-date]"); if (b) select(b.dataset.date); });
   $("reading").addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b && b.dataset.go) select(b.dataset.go); });
-  $("btn-prev-month").addEventListener("click", () => { view.setMonth(view.getMonth() - 1); renderCalendar(); });
-  $("btn-next-month").addEventListener("click", () => { view.setMonth(view.getMonth() + 1); renderCalendar(); });
+  // 切换月份；dir = -1 上个月，1 下个月。带一个轻微的滑入动画
+  function shiftMonth(dir) {
+    view.setMonth(view.getMonth() + dir);
+    renderCalendar();
+    const grid = $("cal-days");
+    grid.classList.remove("slide-next", "slide-prev");
+    void grid.offsetWidth;   // 重新触发动画
+    grid.classList.add(dir > 0 ? "slide-next" : "slide-prev");
+  }
+  $("btn-prev-month").addEventListener("click", () => shiftMonth(-1));
+  $("btn-next-month").addEventListener("click", () => shiftMonth(1));
+
+  // 手机上在日历上左右滑动切换月份：向左滑 → 下个月，向右滑 → 上个月
+  const cal = document.querySelector(".cal");
+  let touch = null;
+  cal.addEventListener("touchstart", e => {
+    if (e.touches.length !== 1) { touch = null; return; }
+    touch = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() };
+  }, { passive: true });
+  cal.addEventListener("touchend", e => {
+    if (!touch) return;
+    const dx = e.changedTouches[0].clientX - touch.x, dy = e.changedTouches[0].clientY - touch.y;
+    const fast = Date.now() - touch.t < 800;
+    touch = null;
+    // 横向移动超过 40px，且明显大于纵向移动（避免和上下滚动页面冲突）
+    if (fast && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) shiftMonth(dx < 0 ? 1 : -1);
+  }, { passive: true });
+  cal.addEventListener("touchcancel", () => { touch = null; }, { passive: true });
   $("btn-today").addEventListener("click", () => select(todayIso));
   document.querySelector(".lang").addEventListener("click", e => { const b = e.target.closest("[data-lang]"); if (b) setLang(b.dataset.lang); });
   document.addEventListener("keydown", e => {
