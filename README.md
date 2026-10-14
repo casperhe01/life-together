@@ -28,7 +28,7 @@ New days are added in batches.
 ## Features
 
 - Language toggle (中 / EN) that remembers the reader's choice
-- Monthly calendar starting on Monday; days with a devotion are marked with a dot
+- Monthly calendar starting on Sunday; days with a devotion are marked with a dot
 - Previous / next navigation, a "Today" button, and ← → keyboard shortcuts
 - Light and dark mode that follow the device setting
 - Phone-friendly single-column layout

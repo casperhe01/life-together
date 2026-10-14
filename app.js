@@ -8,7 +8,7 @@
     zh: {
       brand: "《生命同行营》", sub: "第二期 · 每日读经 · 祷告",
       today: "回到今天", prevM: "上个月", nextM: "下个月", legend: "已有灵修内容",
-      week: ["一", "二", "三", "四", "五", "六", "日"],
+      week: ["日", "一", "二", "三", "四", "五", "六"],
       wd: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
       month: (y, m) => `${y} 年 ${m} 月`, day: (y, m, d) => `${y} 年 ${m} 月 ${d} 日`,
       interp: "经文解读", prayer: "今日祷告", prev: "‹ 前一篇", next: "后一篇 ›",
@@ -20,7 +20,7 @@
     en: {
       brand: "Life Together", sub: "Session 2 · Daily Scripture & Prayer",
       today: "Today", prevM: "Previous month", nextM: "Next month", legend: "Devotion available",
-      week: ["M", "T", "W", "T", "F", "S", "S"],
+      week: ["S", "M", "T", "W", "T", "F", "S"],
       wd: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       month: (y, m) => `${["January","February","March","April","May","June","July","August","September","October","November","December"][m - 1]} ${y}`,
       day: (y, m, d) => `${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m - 1]} ${d}, ${y}`,
@@ -71,7 +71,7 @@
   function renderCalendar() {
     const t = T[lang];
     $("month-label").textContent = t.month(view.getFullYear(), view.getMonth() + 1);
-    const lead = (new Date(view.getFullYear(), view.getMonth(), 1).getDay() + 6) % 7;   // 周一为一周第一天
+    const lead = new Date(view.getFullYear(), view.getMonth(), 1).getDay();   // 周日为一周第一天
     const days = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
     let html = "";
     for (let i = 0; i < lead; i++) html += `<span class="day blank"></span>`;
