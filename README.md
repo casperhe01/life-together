@@ -21,7 +21,7 @@ A bilingual (Chinese / English) daily devotional calendar. Each day pairs a shor
 | Dates (2026) | Passages |
 |---|---|
 | Sep 14 – Oct 16 | 1 John 1:1 – 5:21 |
-| Oct 17 – Oct 18 | 2 John 1–6 |
+| Oct 17 – Oct 18 | 2 John 1:1–6 |
 
 New days are added in batches.
 
@@ -80,14 +80,14 @@ All content lives in `prayers.js` as one entry per day, sorted by date:
 {
   "date": "2026-10-19",
   "weekday": "周一",
-  "ref": "约翰二书 7-9",
+  "ref": "约翰二书 1:7-9",
   "verses": [{ "v": 7, "t": "…" }],
   "title": "…",
   "interpretation": "…",
   "prayer": { "adoration": "…", "confession": "…", "thanksgiving": "…", "supplication": "…" },
   "closing": "奉主耶稣基督的名祷告，阿们！",
   "en": {
-    "ref": "2 John 7–9",
+    "ref": "2 John 1:7–9",
     "verses": [{ "v": 7, "t": "…" }],
     "title": "…",
     "interpretation": "…",
@@ -96,6 +96,8 @@ All content lives in `prayers.js` as one entry per day, sorted by date:
   }
 }
 ```
+
+References always include the chapter, even for one-chapter books (约翰二书 1:1-3 / 2 John 1:1–3), so readers can look them up in any Bible app.
 
 If an entry has no `en` block, the English view falls back to the Chinese text. Days without an entry show "No devotion for this day yet."
 

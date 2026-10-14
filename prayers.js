@@ -1836,7 +1836,7 @@ window.PRAYERS = [
  {
   "date": "2026-10-17",
   "weekday": "周六",
-  "ref": "约翰二书 1-3",
+  "ref": "约翰二书 1:1-3",
   "verses": [
    {
     "v": 1,
@@ -1861,7 +1861,7 @@ window.PRAYERS = [
   },
   "closing": "奉主耶稣基督的名祷告，阿们！",
   "en": {
-   "ref": "2 John 1–3",
+   "ref": "2 John 1:1–3",
    "verses": [
     {
      "v": 1,
@@ -1890,7 +1890,7 @@ window.PRAYERS = [
  {
   "date": "2026-10-18",
   "weekday": "周日",
-  "ref": "约翰二书 4-6",
+  "ref": "约翰二书 1:4-6",
   "verses": [
    {
     "v": 4,
@@ -1915,7 +1915,7 @@ window.PRAYERS = [
   },
   "closing": "奉主耶稣基督的名祷告，阿们！",
   "en": {
-   "ref": "2 John 4–6",
+   "ref": "2 John 1:4–6",
    "verses": [
     {
      "v": 4,

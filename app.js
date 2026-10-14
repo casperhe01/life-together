@@ -48,7 +48,7 @@
       month: (y, m) => `${y} 年 ${m} 月`, day: (y, m, d) => `${y} 年 ${m} 月 ${d} 日`,
       interp: "经文解读", prayer: "今日祷告", prev: "‹ 前一篇", next: "后一篇 ›",
       emptyT: "本日内容尚未生成", emptyS: "有内容的日期在日历上带有小圆点", none: "暂无内容",
-      pendT: "今日内容即将发布", pendS: t => `今天的灵修将于 ${t} 自动发布`,
+      pendT: "今日内容即将发布", pendS: t => `今日的灵修将于 ${t} 自动发布`,
       acts: [["adoration", "A", "Adoration", "赞美"], ["confession", "C", "Confession", "认罪"],
              ["thanksgiving", "T", "Thanksgiving", "感谢"], ["supplication", "S", "Supplication", "祈求"]],
       foot: "经文：和合本（公有领域版本；新译本仅提供外部链接）　·　解读参考：《圣经综合解读》cmcbiblereading.com"
