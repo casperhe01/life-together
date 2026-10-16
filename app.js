@@ -123,11 +123,21 @@
     const key = inView ? selected : iso(new Date(view.getFullYear(), view.getMonth() + 1, 0));
     const s = SESSIONS.filter(x => x.start <= key).pop() || SESSIONS[0];
     $("brand-session").textContent = s[lang];
-    // 正在看哪一期，对应的「回顾」按钮就显示为选中状态
+    // 按钮的选中状态：
+    // · 快速跳转途中：按目的地决定（点哪个按钮，哪个按钮立刻亮起，翻页过程中不变）
+    // · 平时：正在看哪一期，对应的「回顾」按钮亮；日历正显示今天的月份且选中今天，「回到今天」亮
+    // 两者不会同时亮
+    let todayOn, reviewSession;
+    if (jumpTarget) {
+      todayOn = jumpTarget === todayIso;
+      reviewSession = todayOn ? null : SESSIONS.filter(x => x.start <= jumpTarget).pop();
+    } else {
+      todayOn = inView && selected === todayIso;
+      reviewSession = todayOn ? null : s;
+    }
     document.querySelectorAll(".review-btn").forEach(b =>
-      b.setAttribute("aria-pressed", String(SESSIONS[+b.dataset.session] === s)));
-    // 正在看今天，「回到今天」就显示为选中状态（与「回顾」按钮不会同时选中）
-    $("btn-today").setAttribute("aria-pressed", String(selected === todayIso));
+      b.setAttribute("aria-pressed", String(SESSIONS[+b.dataset.session] === reviewSession)));
+    $("btn-today").setAttribute("aria-pressed", String(todayOn));
   }
 
   function renderCalendar() {
@@ -189,10 +199,11 @@
 
   function renderAll() { renderChrome(); renderCalendar(); renderReading(); }
 
-  var jumpTimer = null;   // 正在进行的快速翻页（见 jumpTo）
+  var jumpTimer = null, jumpTarget = null;   // 正在进行的快速翻页及其目的地（见 jumpTo）
+  function stopJump() { clearTimeout(jumpTimer); jumpTarget = null; }
   function select(key) {
     if (!key) return;
-    clearTimeout(jumpTimer);
+    stopJump();
     selected = key;
     const d = parse(key);
     view = new Date(d.getFullYear(), d.getMonth(), 1);
@@ -222,7 +233,7 @@
   const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   function jumpTo(key) {
     if (!key) return;
-    clearTimeout(jumpTimer);
+    stopJump();
     const t = parse(key);
     const diff = (t.getFullYear() - view.getFullYear()) * 12 + (t.getMonth() - view.getMonth());
     if (Math.abs(diff) <= 1 || reduceMotion) {
@@ -231,6 +242,7 @@
       return;
     }
     const dir = Math.sign(diff), steps = Math.abs(diff);
+    jumpTarget = key;   // 先记下目的地，按钮立刻按目的地亮起
     const delay = Math.max(35, Math.min(90, 520 / steps));   // 月份越多翻得越快
     let n = 0;
     (function step() {
@@ -240,8 +252,8 @@
       else select(key);
     })();
   }
-  $("btn-prev-month").addEventListener("click", () => { clearTimeout(jumpTimer); shiftMonth(-1); });
-  $("btn-next-month").addEventListener("click", () => { clearTimeout(jumpTimer); shiftMonth(1); });
+  $("btn-prev-month").addEventListener("click", () => { stopJump(); shiftMonth(-1); });
+  $("btn-next-month").addEventListener("click", () => { stopJump(); shiftMonth(1); });
 
   // 手机上在日历上左右滑动切换月份：向左滑 → 下个月，向右滑 → 上个月
   const cal = document.querySelector(".cal");
@@ -256,7 +268,7 @@
     const fast = Date.now() - touch.t < 800;
     touch = null;
     // 横向移动超过 40px，且明显大于纵向移动（避免和上下滚动页面冲突）
-    if (fast && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) { clearTimeout(jumpTimer); shiftMonth(dx < 0 ? 1 : -1); }
+    if (fast && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) { stopJump(); shiftMonth(dx < 0 ? 1 : -1); }
   }, { passive: true });
   cal.addEventListener("touchcancel", () => { touch = null; }, { passive: true });
   $("btn-today").addEventListener("click", () => jumpTo(todayIso));
