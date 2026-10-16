@@ -9,11 +9,14 @@
   const mm = String(pubM || 0).padStart(2, "0");
   const h12 = (pubH % 12) || 12, ap = pubH < 12 ? "am" : "pm";
   const publishLabel = { zh: `${h12}:${mm}${ap}`, en: `${h12}:${mm} ${ap}` };
-  // 各期开始的日期（以后有新的一期，在这里加一行）。日历上看到的日期属于哪一期，标题就显示哪一期
+  // 各期的起止日期（含首尾两天；以后有新的一期，在这里加一行）。
+  // 日历上看到的日期在哪一期之内，标题就显示哪一期；不在任何一期之内，标题不显示期数。
+  // 一期结束之后（今天晚于结束日期），会自动出现这一期的「回顾」按钮
   const SESSIONS = [
-    { start: "2026-02-02", zh: "第一期", en: "Session 1" },
-    { start: "2026-09-01", zh: "第二期", en: "Session 2" },
+    { start: "2026-02-02", end: "2026-04-26", zh: "第一期", en: "Session 1" },   // 12 周
+    { start: "2026-09-14", end: "2027-02-14", zh: "第二期", en: "Session 2" },   // 22 周
   ];
+  const sessionOf = key => SESSIONS.find(x => x.start <= key && key <= x.end);
 
   // 当前日期与时间（按 cfg.timeZone；为空则用读者设备的本地时间）
   function now() {
@@ -46,7 +49,7 @@
 
   const T = {
     zh: {
-      brand: "生命同行营", sub: "每日读经 · 祷告", review: s => "回顾" + s.zh.replace("第", ""),
+      brand: "生命同行营", sub: "每日读经 · 祷告", review: s => "回顾" + s.zh.replace("第", ""), past: "回顾往期",
       today: "回到今天", prevM: "上个月", nextM: "下个月", legend: "已有灵修内容", legendPub: t => `（当日内容 ${t} 自动发布）`,
       week: ["日", "一", "二", "三", "四", "五", "六"],
       wd: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
@@ -59,7 +62,7 @@
       foot: "经文：和合本（公有领域版本；新译本仅提供外部链接）　·　解读参考：《圣经综合解读》cmcbiblereading.com"
     },
     en: {
-      brand: "Life Together", sub: "Daily Scripture · Prayer", review: s => s.en,
+      brand: "Life Together", sub: "Daily Scripture · Prayer", review: s => s.en, past: "Past Sessions",
       today: "Today", prevM: "Previous month", nextM: "Next month", legend: "Devotion available", legendPub: t => ` (today's devotion posts at ${t})`,
       week: ["S", "M", "T", "W", "T", "F", "S"],
       wd: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
@@ -105,10 +108,17 @@
     $("brand-name").textContent = t.brand;
     $("brand-sub").textContent = t.sub;
     $("btn-today").textContent = t.today;
-    // 「回顾」按钮：除最新一期以外，每个往期一个按钮（以后有第三期，就会自动出现「回顾一期」「回顾二期」）
+    // 「回顾」按钮：只有一期已经结束时，直接显示「回顾一期」；
+    // 两期或更多已经结束时（第二期结束后自动变成这样），显示一个「回顾往期」按钮，点开再选第几期
     const icon = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4.5h4.5"/><path d="M12 7.5V12l3 2"/></svg>`;
-    $("reviews").innerHTML = SESSIONS.slice(0, -1).map((s, i) =>
-      `<button type="button" class="review-btn" data-session="${i}">${icon}<span>${t.review(s)}</span></button>`).join("");
+    const past = SESSIONS.map((s, i) => ({ s, i })).filter(x => x.s.end < todayIso);
+    $("reviews").innerHTML = past.length <= 1
+      ? past.map(x => `<button type="button" class="review-btn" data-session="${x.i}">${icon}<span>${t.review(x.s)}</span></button>`).join("")
+      : `<span class="review-wrap">
+           <button type="button" class="review-btn" id="btn-past" aria-haspopup="true" aria-expanded="false">${icon}<span>${t.past}</span><i class="caret" aria-hidden="true"></i></button>
+           <span class="review-menu" id="past-menu" hidden>${past.map(x =>
+             `<button type="button" class="review-item" data-session="${x.i}">${t.review(x.s)}</button>`).join("")}</span>
+         </span>`;
     $("btn-prev-month").setAttribute("aria-label", t.prevM);
     $("btn-next-month").setAttribute("aria-label", t.nextM);
     $("legend").textContent = t.legend + (showAll ? "" : t.legendPub(publishLabel[lang]));
@@ -120,9 +130,14 @@
   // 标题旁的「第几期」：日历当前月份里选中的日期；没选中则看这个月的最后一天
   function renderSession() {
     const inView = selected && parse(selected).getFullYear() === view.getFullYear() && parse(selected).getMonth() === view.getMonth();
-    const key = inView ? selected : iso(new Date(view.getFullYear(), view.getMonth() + 1, 0));
-    const s = SESSIONS.filter(x => x.start <= key).pop() || SESSIONS[0];
-    $("brand-session").textContent = s[lang];
+    // 看选中的日期；还没在这个月选日期时，看这个月有没有哪几天在某一期之内
+    const mFirst = iso(new Date(view.getFullYear(), view.getMonth(), 1));
+    const mLast = iso(new Date(view.getFullYear(), view.getMonth() + 1, 0));
+    const s = inView ? sessionOf(selected) : SESSIONS.find(x => x.start <= mLast && x.end >= mFirst);
+    // 不在任何一期之内：期数文字隐藏，但位置保留，标题不会跳动
+    const label = $("brand-session");
+    label.textContent = (s || SESSIONS[SESSIONS.length - 1])[lang];
+    label.style.visibility = s ? "visible" : "hidden";
     // 按钮的选中状态：
     // · 快速跳转途中：按目的地决定（点哪个按钮，哪个按钮立刻亮起，翻页过程中不变）
     // · 平时：正在看哪一期，对应的「回顾」按钮亮；日历正显示今天的月份且选中今天，「回到今天」亮
@@ -130,13 +145,16 @@
     let todayOn, reviewSession;
     if (jumpTarget) {
       todayOn = jumpTarget === todayIso;
-      reviewSession = todayOn ? null : SESSIONS.filter(x => x.start <= jumpTarget).pop();
+      reviewSession = todayOn ? null : sessionOf(jumpTarget);
     } else {
       todayOn = inView && selected === todayIso;
       reviewSession = todayOn ? null : s;
     }
-    document.querySelectorAll(".review-btn").forEach(b =>
+    document.querySelectorAll("#reviews [data-session]").forEach(b =>
       b.setAttribute("aria-pressed", String(SESSIONS[+b.dataset.session] === reviewSession)));
+    // 「回顾往期」：正在看任何一个往期，它就显示为选中状态
+    const pastBtn = $("btn-past");
+    if (pastBtn) pastBtn.setAttribute("aria-pressed", String(!!reviewSession && reviewSession.end < todayIso));
     $("btn-today").setAttribute("aria-pressed", String(todayOn));
   }
 
@@ -272,10 +290,21 @@
   }, { passive: true });
   cal.addEventListener("touchcancel", () => { touch = null; }, { passive: true });
   $("btn-today").addEventListener("click", () => jumpTo(todayIso));
+  // 「回顾往期」下拉选单：点按钮打开/关上；选了某一期就跳过去并关上；点别处或按 Esc 也关上
+  const menuOpen = open => {
+    const m = $("past-menu"), b = $("btn-past");
+    if (!m || !b) return;
+    m.hidden = !open; b.setAttribute("aria-expanded", String(open));
+  };
   $("reviews").addEventListener("click", e => {
+    if (e.target.closest("#btn-past")) { menuOpen($("past-menu").hidden); return; }
     const b = e.target.closest("[data-session]");
-    if (b) jumpTo(SESSIONS[+b.dataset.session].start);
+    if (!b) return;
+    menuOpen(false);
+    jumpTo(SESSIONS[+b.dataset.session].start);
   });
+  document.addEventListener("click", e => { if (!e.target.closest(".review-wrap")) menuOpen(false); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") menuOpen(false); });
   // 点语言椭圆框里的任何位置都切换：点到另一种语言就选它，点到当前语言或空白处就换成另一种
   document.querySelector(".lang").addEventListener("click", e => {
     const b = e.target.closest("[data-lang]");
