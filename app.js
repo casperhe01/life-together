@@ -189,8 +189,10 @@
 
   function renderAll() { renderChrome(); renderCalendar(); renderReading(); }
 
+  var jumpTimer = null;   // 正在进行的快速翻页（见 jumpTo）
   function select(key) {
     if (!key) return;
+    clearTimeout(jumpTimer);
     selected = key;
     const d = parse(key);
     view = new Date(d.getFullYear(), d.getMonth(), 1);
@@ -206,16 +208,40 @@
   $("cal-days").addEventListener("click", e => { const b = e.target.closest("[data-date]"); if (b) select(b.dataset.date); });
   $("reading").addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b && b.dataset.go) select(b.dataset.go); });
   // 切换月份；dir = -1 上个月，1 下个月。带一个轻微的滑入动画
-  function shiftMonth(dir) {
+  function shiftMonth(dir, cls) {
     view.setMonth(view.getMonth() + dir);
     renderCalendar();
     const grid = $("cal-days");
-    grid.classList.remove("slide-next", "slide-prev");
+    grid.classList.remove("slide-next", "slide-prev", "flip-next", "flip-prev");
     void grid.offsetWidth;   // 重新触发动画
-    grid.classList.add(dir > 0 ? "slide-next" : "slide-prev");
+    grid.classList.add((cls || "slide") + (dir > 0 ? "-next" : "-prev"));
   }
-  $("btn-prev-month").addEventListener("click", () => shiftMonth(-1));
-  $("btn-next-month").addEventListener("click", () => shiftMonth(1));
+
+  // 「回到今天」「回顾一期」跳转：相隔一个月以上时，日历先一个月一个月地快速翻过去，
+  // 让读者看得出日期走了很远；翻到目标月份后再显示当天内容。整个过程约半秒
+  const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function jumpTo(key) {
+    if (!key) return;
+    clearTimeout(jumpTimer);
+    const t = parse(key);
+    const diff = (t.getFullYear() - view.getFullYear()) * 12 + (t.getMonth() - view.getMonth());
+    if (Math.abs(diff) <= 1 || reduceMotion) {
+      if (diff) shiftMonth(Math.sign(diff));
+      select(key);
+      return;
+    }
+    const dir = Math.sign(diff), steps = Math.abs(diff);
+    const delay = Math.max(35, Math.min(90, 520 / steps));   // 月份越多翻得越快
+    let n = 0;
+    (function step() {
+      n++;
+      shiftMonth(dir, n < steps ? "flip" : "slide");
+      if (n < steps) jumpTimer = setTimeout(step, delay);
+      else select(key);
+    })();
+  }
+  $("btn-prev-month").addEventListener("click", () => { clearTimeout(jumpTimer); shiftMonth(-1); });
+  $("btn-next-month").addEventListener("click", () => { clearTimeout(jumpTimer); shiftMonth(1); });
 
   // 手机上在日历上左右滑动切换月份：向左滑 → 下个月，向右滑 → 上个月
   const cal = document.querySelector(".cal");
@@ -230,13 +256,13 @@
     const fast = Date.now() - touch.t < 800;
     touch = null;
     // 横向移动超过 40px，且明显大于纵向移动（避免和上下滚动页面冲突）
-    if (fast && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) shiftMonth(dx < 0 ? 1 : -1);
+    if (fast && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) { clearTimeout(jumpTimer); shiftMonth(dx < 0 ? 1 : -1); }
   }, { passive: true });
   cal.addEventListener("touchcancel", () => { touch = null; }, { passive: true });
-  $("btn-today").addEventListener("click", () => select(todayIso));
+  $("btn-today").addEventListener("click", () => jumpTo(todayIso));
   $("reviews").addEventListener("click", e => {
     const b = e.target.closest("[data-session]");
-    if (b) select(SESSIONS[+b.dataset.session].start);
+    if (b) jumpTo(SESSIONS[+b.dataset.session].start);
   });
   // 点语言椭圆框里的任何位置都切换：点到另一种语言就选它，点到当前语言或空白处就换成另一种
   document.querySelector(".lang").addEventListener("click", e => {
