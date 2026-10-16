@@ -59,7 +59,7 @@
       foot: "经文：和合本（公有领域版本；新译本仅提供外部链接）　·　解读参考：《圣经综合解读》cmcbiblereading.com"
     },
     en: {
-      brand: "Life Together", sub: "Daily Scripture & Prayer", review: "Session 1",
+      brand: "Life Together", sub: "Daily Scripture · Prayer", review: "Session 1",
       today: "Today", prevM: "Previous month", nextM: "Next month", legend: "Devotion available", legendPub: t => ` (today's devotion posts automatically at ${t})`,
       week: ["S", "M", "T", "W", "T", "F", "S"],
       wd: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
