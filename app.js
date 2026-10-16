@@ -46,7 +46,7 @@
 
   const T = {
     zh: {
-      brand: "生命同行营", sub: "每日读经 · 祷告", review: "回顾一期",
+      brand: "生命同行营", sub: "每日读经 · 祷告", review: s => "回顾" + s.zh.replace("第", ""),
       today: "回到今天", prevM: "上个月", nextM: "下个月", legend: "已有灵修内容", legendPub: t => `（当日内容 ${t} 自动发布）`,
       week: ["日", "一", "二", "三", "四", "五", "六"],
       wd: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
@@ -59,7 +59,7 @@
       foot: "经文：和合本（公有领域版本；新译本仅提供外部链接）　·　解读参考：《圣经综合解读》cmcbiblereading.com"
     },
     en: {
-      brand: "Life Together", sub: "Daily Scripture · Prayer", review: "Session 1",
+      brand: "Life Together", sub: "Daily Scripture · Prayer", review: s => s.en,
       today: "Today", prevM: "Previous month", nextM: "Next month", legend: "Devotion available", legendPub: t => ` (today's devotion posts at ${t})`,
       week: ["S", "M", "T", "W", "T", "F", "S"],
       wd: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
@@ -105,7 +105,10 @@
     $("brand-name").textContent = t.brand;
     $("brand-sub").textContent = t.sub;
     $("btn-today").textContent = t.today;
-    $("btn-review").textContent = t.review;
+    // 「回顾」按钮：除最新一期以外，每个往期一个按钮（以后有第三期，就会自动出现「回顾一期」「回顾二期」）
+    const icon = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4.5h4.5"/><path d="M12 7.5V12l3 2"/></svg>`;
+    $("reviews").innerHTML = SESSIONS.slice(0, -1).map((s, i) =>
+      `<button type="button" class="review-btn" data-session="${i}">${icon}<span>${t.review(s)}</span></button>`).join("");
     $("btn-prev-month").setAttribute("aria-label", t.prevM);
     $("btn-next-month").setAttribute("aria-label", t.nextM);
     $("legend").textContent = t.legend + (showAll ? "" : t.legendPub(publishLabel[lang]));
@@ -120,6 +123,9 @@
     const key = inView ? selected : iso(new Date(view.getFullYear(), view.getMonth() + 1, 0));
     const s = SESSIONS.filter(x => x.start <= key).pop() || SESSIONS[0];
     $("brand-session").textContent = s[lang];
+    // 正在看哪一期，对应的「回顾」按钮就显示为选中状态
+    document.querySelectorAll(".review-btn").forEach(b =>
+      b.setAttribute("aria-pressed", String(SESSIONS[+b.dataset.session] === s)));
   }
 
   function renderCalendar() {
@@ -226,7 +232,10 @@
   }, { passive: true });
   cal.addEventListener("touchcancel", () => { touch = null; }, { passive: true });
   $("btn-today").addEventListener("click", () => select(todayIso));
-  $("btn-review").addEventListener("click", () => select(SESSIONS[0].start));
+  $("reviews").addEventListener("click", e => {
+    const b = e.target.closest("[data-session]");
+    if (b) select(SESSIONS[+b.dataset.session].start);
+  });
   // 点语言椭圆框里的任何位置都切换：点到另一种语言就选它，点到当前语言或空白处就换成另一种
   document.querySelector(".lang").addEventListener("click", e => {
     const b = e.target.closest("[data-lang]");
