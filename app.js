@@ -1,4 +1,4 @@
-// 生命同行营 第二期 / Life Together：读取 prayers.js 中的 window.PRAYERS，显示月历与当日灵修（中 / EN）。
+// 生命同行营 / Life Together：读取 prayers.js 中的 window.PRAYERS，显示月历与当日灵修（中 / EN）。
 (function () {
   const all = window.PRAYERS || [];
   const cfg = Object.assign({ isAllContentDisplayed: 1, publishTime: "19:00", timeZone: "" }, window.CONFIG || {});
@@ -9,6 +9,11 @@
   const mm = String(pubM || 0).padStart(2, "0");
   const h12 = (pubH % 12) || 12, ap = pubH < 12 ? "am" : "pm";
   const publishLabel = { zh: `${h12}:${mm}${ap}`, en: `${h12}:${mm} ${ap}` };
+  // 各期开始的日期（以后有新的一期，在这里加一行）。日历上看到的日期属于哪一期，标题就显示哪一期
+  const SESSIONS = [
+    { start: "2026-02-02", zh: "第一期", en: "Session 1" },
+    { start: "2026-09-01", zh: "第二期", en: "Session 2" },
+  ];
 
   // 当前日期与时间（按 cfg.timeZone；为空则用读者设备的本地时间）
   function now() {
@@ -41,7 +46,7 @@
 
   const T = {
     zh: {
-      brand: "生命同行营", sub: "第二期 · 每日读经 · 祷告",
+      brand: "生命同行营", sub: "每日读经 · 祷告", review: "回顾一期",
       today: "回到今天", prevM: "上个月", nextM: "下个月", legend: "已有灵修内容", legendPub: t => `（当日内容 ${t} 自动发布）`,
       week: ["日", "一", "二", "三", "四", "五", "六"],
       wd: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
@@ -54,7 +59,7 @@
       foot: "经文：和合本（公有领域版本；新译本仅提供外部链接）　·　解读参考：《圣经综合解读》cmcbiblereading.com"
     },
     en: {
-      brand: "Life Together", sub: "Session 2 · Daily Scripture & Prayer",
+      brand: "Life Together", sub: "Daily Scripture & Prayer", review: "Session 1",
       today: "Today", prevM: "Previous month", nextM: "Next month", legend: "Devotion available", legendPub: t => ` (today's devotion posts automatically at ${t})`,
       week: ["S", "M", "T", "W", "T", "F", "S"],
       wd: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
@@ -100,6 +105,7 @@
     $("brand-name").textContent = t.brand;
     $("brand-sub").textContent = t.sub;
     $("btn-today").textContent = t.today;
+    $("btn-review").textContent = t.review;
     $("btn-prev-month").setAttribute("aria-label", t.prevM);
     $("btn-next-month").setAttribute("aria-label", t.nextM);
     $("legend").textContent = t.legend + (showAll ? "" : t.legendPub(publishLabel[lang]));
@@ -108,8 +114,17 @@
     ["zh", "en"].forEach(l => $("lang-" + l).setAttribute("aria-pressed", String(l === lang)));
   }
 
+  // 标题旁的「第几期」：日历当前月份里选中的日期；没选中则看这个月的最后一天
+  function renderSession() {
+    const inView = selected && parse(selected).getFullYear() === view.getFullYear() && parse(selected).getMonth() === view.getMonth();
+    const key = inView ? selected : iso(new Date(view.getFullYear(), view.getMonth() + 1, 0));
+    const s = SESSIONS.filter(x => x.start <= key).pop() || SESSIONS[0];
+    $("brand-session").textContent = s[lang];
+  }
+
   function renderCalendar() {
     const t = T[lang];
+    renderSession();
     $("month-label").textContent = t.month(view.getFullYear(), view.getMonth() + 1);
     const lead = new Date(view.getFullYear(), view.getMonth(), 1).getDay();   // 周日为一周第一天
     const days = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
@@ -211,6 +226,7 @@
   }, { passive: true });
   cal.addEventListener("touchcancel", () => { touch = null; }, { passive: true });
   $("btn-today").addEventListener("click", () => select(todayIso));
+  $("btn-review").addEventListener("click", () => select(SESSIONS[0].start));
   // 点语言椭圆框里的任何位置都切换：点到另一种语言就选它，点到当前语言或空白处就换成另一种
   document.querySelector(".lang").addEventListener("click", e => {
     const b = e.target.closest("[data-lang]");
