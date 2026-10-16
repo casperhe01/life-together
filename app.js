@@ -60,7 +60,7 @@
     },
     en: {
       brand: "Life Together", sub: "Daily Scripture · Prayer", review: "Session 1",
-      today: "Today", prevM: "Previous month", nextM: "Next month", legend: "Devotion available", legendPub: t => ` (today's devotion posts automatically at ${t})`,
+      today: "Today", prevM: "Previous month", nextM: "Next month", legend: "Devotion available", legendPub: t => ` (today's devotion posts at ${t})`,
       week: ["S", "M", "T", "W", "T", "F", "S"],
       wd: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       month: (y, m) => `${["January","February","March","April","May","June","July","August","September","October","November","December"][m - 1]} ${y}`,
