@@ -2,7 +2,7 @@
 
 A bilingual (Chinese / English) daily devotional calendar. Each day pairs a short Scripture passage with a brief reflection and a four-part prayer, so participants can read and pray through the same passage together.
 
-**Live site:** `https://<your-username>.github.io/<repository-name>/`
+**Live site:** [https://life-together.github.io](https://life-together.github.io)
 
 ## What's on each day
 
@@ -66,6 +66,8 @@ Note: this only controls what the page shows. Every devotion in `prayers.js` can
 Download the files and open `index.html` in any modern browser. Nothing needs to be installed.
 
 ## Publish with GitHub Pages
+
+This repository belongs to the GitHub organization `life-together` and is named `life-together.github.io`, so the site is served at the root address https://life-together.github.io.
 
 1. Push these files to the root of the `main` branch.
 2. In the repository, open **Settings → Pages**.
