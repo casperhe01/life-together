@@ -34,8 +34,7 @@ New days are added in batches.
 - Optional daily release: show only devotions up to today, with today's devotion appearing at 10:00 pm (see **Settings**)
 - Light and dark mode that follow the device setting
 - Phone-friendly single-column layout
-- No build step, no server, and no database
-- Visit counts with [GoatCounter](https://www.goatcounter.com/) , a privacy-friendly counter that does not use cookies; see the script at the end of `index.html`
+- No build step, no server, no database, and no tracking
 
 ## Files
 
