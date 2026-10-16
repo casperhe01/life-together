@@ -126,6 +126,8 @@
     // 正在看哪一期，对应的「回顾」按钮就显示为选中状态
     document.querySelectorAll(".review-btn").forEach(b =>
       b.setAttribute("aria-pressed", String(SESSIONS[+b.dataset.session] === s)));
+    // 正在看今天，「回到今天」就显示为选中状态（与「回顾」按钮不会同时选中）
+    $("btn-today").setAttribute("aria-pressed", String(selected === todayIso));
   }
 
   function renderCalendar() {
