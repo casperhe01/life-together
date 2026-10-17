@@ -5,10 +5,9 @@
   const showAll = Number(cfg.isAllContentDisplayed) === 1;
   const [pubH, pubM] = String(cfg.publishTime).split(":").map(Number);
   const publishMin = (pubH || 0) * 60 + (pubM || 0);
-  // 发布时间的显示文字，例如 "22:00" → 中文 "10:00pm"、英文 "10:00 pm"
+  // 发布时间的显示文字（全站统一用 24 小时制），例如 "22:00"
   const mm = String(pubM || 0).padStart(2, "0");
-  const h12 = (pubH % 12) || 12, ap = pubH < 12 ? "am" : "pm";
-  const publishLabel = { zh: `${h12}:${mm}${ap}`, en: `${h12}:${mm} ${ap}` };
+  const publish24 = `${String(pubH || 0).padStart(2, "0")}:${mm}`;
   // 各期的起止日期（含首尾两天；以后有新的一期，在这里加一行）。
   // 日历上看到的日期在哪一期之内，标题就显示哪一期；不在任何一期之内，标题不显示期数。
   // 一期结束之后（今天晚于结束日期），会自动出现这一期的「回顾」按钮
@@ -50,7 +49,7 @@
   const T = {
     zh: {
       brand: "生命同行营", sub: "每日读经 · 祷告", review: s => "回顾" + s.zh.replace("第", ""), past: "回顾往期",
-      today: "回到今天", prevM: "上个月", nextM: "下个月", legend: "已有灵修内容", legendPub: t => `（当日内容 ${t} 发布）`,
+      today: "回到今天", prevM: "上个月", nextM: "下个月", legend: "已有灵修内容", legendPub: t => `（当日 ${t} 发布）`,
       week: ["日", "一", "二", "三", "四", "五", "六"],
       wd: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
       month: (y, m) => `${y} 年 ${m} 月`, day: (y, m, d) => `${y} 年 ${m} 月 ${d} 日`,
@@ -62,8 +61,8 @@
       foot: "经文：和合本（公有领域版本；新译本仅提供外部链接）　·　解读参考：《圣经综合解读》cmcbiblereading.com"
     },
     en: {
-      brand: "Life Together", sub: "Daily Scripture · Prayer", review: s => s.en, past: "Past Sessions",
-      today: "Today", prevM: "Previous month", nextM: "Next month", legend: "Devotion available", legendPub: t => ` (today's devotion posts at ${t})`,
+      brand: "Life Together", sub: '<span class="sub-daily">Daily </span>Scripture\u202F·\u202FPrayer', review: s => s.en, past: "Past Sessions",
+      today: "Today", prevM: "Previous month", nextM: "Next month", legend: "Devotion available", legendPub: t => ` (daily post at ${t})`,
       week: ["S", "M", "T", "W", "T", "F", "S"],
       wd: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       month: (y, m) => `${["January","February","March","April","May","June","July","August","September","October","November","December"][m - 1]} ${y}`,
@@ -106,7 +105,7 @@
     document.documentElement.lang = lang === "en" ? "en" : "zh-CN";
     document.body.classList.toggle("is-en", lang === "en");
     $("brand-name").textContent = t.brand;
-    $("brand-sub").textContent = t.sub;
+    $("brand-sub").innerHTML = t.sub;
     // 「回到今天」：日历图标（圆点表示今天）+ 文字
     $("btn-today").innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.6" fill="currentColor" stroke="none"/></svg><span>${t.today}</span>`;
     // 「回顾」按钮：只有一期已经结束时，直接显示「回顾一期」；
@@ -122,7 +121,7 @@
          </span>`;
     $("btn-prev-month").setAttribute("aria-label", t.prevM);
     $("btn-next-month").setAttribute("aria-label", t.nextM);
-    $("legend").textContent = t.legend + (showAll ? "" : t.legendPub(publishLabel[lang]));
+    $("legend").textContent = t.legend + (showAll ? "" : t.legendPub(publish24));
     $("foot").textContent = t.foot;
     $("cal-week").innerHTML = t.week.map(w => `<span>${w}</span>`).join("");
     ["zh", "en"].forEach(l => $("lang-" + l).setAttribute("aria-pressed", String(l === lang)));
@@ -194,7 +193,7 @@
     if (!item) {
       const pend = pendingToday && selected === todayIso;
       const msg = pend
-        ? `<strong>${t.pendT}</strong><span>${t.pendS(publishLabel[lang])}</span><span>${t.emptyS}</span>`
+        ? `<strong>${t.pendT}</strong><span>${t.pendS(publish24)}</span><span>${t.emptyS}</span>`
         : `<strong>${t.emptyT}</strong><span>${t.emptyS}</span>`;
       $("reading").innerHTML = `${dateRow}<div class="empty">${msg}</div>${pager}`;
       return;

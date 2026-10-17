@@ -36,7 +36,7 @@ New days are added in batches.
 - Monthly calendar starting on Sunday; days with a devotion are marked with a dot
 - Previous / next navigation, a "Today" button, and ← → keyboard shortcuts
 - On phones, swipe left or right on the calendar to change month
-- Optional daily release: show only devotions up to today, with today's devotion appearing at 10:00 pm (see **Settings**)
+- Optional daily release: show only devotions up to today, with today's devotion appearing at 22:00 (see **Settings**)
 - Light and dark mode that follow the device setting
 - Phone-friendly single-column layout
 - No build step, no server, no database, and no tracking
