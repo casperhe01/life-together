@@ -107,7 +107,8 @@
     document.body.classList.toggle("is-en", lang === "en");
     $("brand-name").textContent = t.brand;
     $("brand-sub").textContent = t.sub;
-    $("btn-today").textContent = t.today;
+    // 「回到今天」：日历图标（圆点表示今天）+ 文字
+    $("btn-today").innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.6" fill="currentColor" stroke="none"/></svg><span>${t.today}</span>`;
     // 「回顾」按钮：只有一期已经结束时，直接显示「回顾一期」；
     // 两期或更多已经结束时（第二期结束后自动变成这样），显示一个「回顾往期」按钮，点开再选第几期
     const icon = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4.5h4.5"/><path d="M12 7.5V12l3 2"/></svg>`;
