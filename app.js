@@ -50,13 +50,13 @@
   const T = {
     zh: {
       brand: "生命同行营", sub: "每日读经 · 祷告", review: s => "回顾" + s.zh.replace("第", ""), past: "回顾往期",
-      today: "回到今天", prevM: "上个月", nextM: "下个月", legend: "已有灵修内容", legendPub: t => `（当日内容 ${t} 自动发布）`,
+      today: "回到今天", prevM: "上个月", nextM: "下个月", legend: "已有灵修内容", legendPub: t => `（当日内容 ${t} 发布）`,
       week: ["日", "一", "二", "三", "四", "五", "六"],
       wd: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
       month: (y, m) => `${y} 年 ${m} 月`, day: (y, m, d) => `${y} 年 ${m} 月 ${d} 日`,
       interp: "经文解读", prayer: "今日祷告", prev: "‹ 前一篇", next: "后一篇 ›",
       emptyT: "本日内容尚未生成", emptyS: "有内容的日期在日历上带有小圆点", none: "暂无内容",
-      pendT: "今日内容即将发布", pendS: t => `今日的灵修将于 ${t} 自动发布`,
+      pendT: "今日内容即将发布", pendS: t => `今日的灵修将于 ${t} 发布`,
       acts: [["adoration", "A", "Adoration", "赞美"], ["confession", "C", "Confession", "认罪"],
              ["thanksgiving", "T", "Thanksgiving", "感谢"], ["supplication", "S", "Supplication", "祈求"]],
       foot: "经文：和合本（公有领域版本；新译本仅提供外部链接）　·　解读参考：《圣经综合解读》cmcbiblereading.com"
@@ -70,7 +70,7 @@
       day: (y, m, d) => `${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m - 1]} ${d}, ${y}`,
       interp: "Reflection", prayer: "Today's Prayer", prev: "‹ Previous", next: "Next ›",
       emptyT: "No devotion for this day yet", emptyS: "Days with a devotion are marked with a dot", none: "no devotion yet",
-      pendT: "Today's devotion is coming soon", pendS: t => `Today's devotion will be posted automatically at ${t}`,
+      pendT: "Today's devotion is coming soon", pendS: t => `Today's devotion will be posted at ${t}`,
       acts: [["adoration", "A", "Adoration", ""], ["confession", "C", "Confession", ""],
              ["thanksgiving", "T", "Thanksgiving", ""], ["supplication", "S", "Supplication", ""]],
       foot: "Scripture: Berean Standard Bible (BSB), public domain; NIV is an external link only　·　Reflections drawn from cmcbiblereading.com"
